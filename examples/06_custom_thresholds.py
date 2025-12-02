@@ -13,6 +13,9 @@ Run:
 import argparse
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -105,7 +108,8 @@ def main():
         print()
 
     # ArcGIS Feature Service URL
-    service_url = (
+    service_url = os.getenv(
+        'ARCGIS_SERVICE_URL',
         "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
         "USA_Census_Counties/FeatureServer/0"
     )

@@ -6,6 +6,8 @@ states in a batch process and compare results.
 
 Run:
     python examples/05_batch_multiple_states.py
+    python examples/05_batch_multiple_states.py --states=TX,CA,OK
+    python examples/05_batch_multiple_states.py --states=TX,OK --min-area=3000.0
     python examples/05_batch_multiple_states.py --json
     python examples/05_batch_multiple_states.py --output=multi_state_report.json
 """
@@ -15,6 +17,9 @@ import os
 import time
 import json
 import argparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -53,6 +58,12 @@ def parse_arguments():
         '--states',
         type=str,
         help='Comma-separated list of states (default: TX,OK,LA,NM,WY)'
+    )
+    parser.add_argument(
+        '--min-area',
+        type=float,
+        default=2500.0,
+        help='Minimum area requirement in square miles (default: 2500.0)'
     )
     return parser.parse_args()
 
@@ -168,18 +179,17 @@ def main():
         states_to_analyze = ['Texas', 'Oklahoma', 'Louisiana', 'New Mexico', 'Wyoming']
 
     # ArcGIS Feature Service URL
-    service_url = (
+    service_url = os.getenv(
+        'ARCGIS_SERVICE_URL',
         "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
         "USA_Census_Counties/FeatureServer/0"
     )
-
-    min_area_requirement = 2500.0
 
     if not args.quiet:
         print(f"\nAnalyzing {len(states_to_analyze)} states:")
         for state in states_to_analyze:
             print(f"  - {state}")
-        print(f"\nMinimum area requirement: {min_area_requirement} sq mi")
+        print(f"\nMinimum area requirement: {args.min_area} sq mi")
         print("\nStarting batch analysis...")
 
     state_reports = {}
@@ -187,7 +197,7 @@ def main():
 
     with ArcGISClient(service_url) as client:
         for state_name in states_to_analyze:
-            report = analyze_state(client, state_name, min_area_requirement, args.quiet)
+            report = analyze_state(client, state_name, args.min_area, args.quiet)
             if report:
                 state_reports[state_name] = report
 

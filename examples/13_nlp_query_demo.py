@@ -15,7 +15,11 @@ Requirements:
 """
 
 import sys
+import os
 from typing import Optional
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from src.arcgis_client import ArcGISClient
 from src.nlp_query_parser import NLPQueryParser
@@ -24,7 +28,8 @@ from src.errors import ArcGISError, ArcGISValidationError
 
 
 # USA Census Counties Feature Service
-SERVICE_URL = (
+SERVICE_URL = os.getenv(
+    'ARCGIS_SERVICE_URL',
     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
     "USA_Census_Counties/FeatureServer/0"
 )

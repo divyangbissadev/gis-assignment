@@ -6,6 +6,8 @@ to JSON and CSV formats for further processing or reporting.
 
 Run:
     python examples/03_export_results.py
+    python examples/03_export_results.py --state=California
+    python examples/03_export_results.py --state=Texas --min-area=3000.0
     python examples/03_export_results.py --output-dir=my_reports
     python examples/03_export_results.py --formats=json,csv
     python examples/03_export_results.py --json  # Also export to stdout
@@ -17,6 +19,10 @@ import json
 import csv
 import argparse
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -29,6 +35,18 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description='Export compliance results to multiple formats'
+    )
+    parser.add_argument(
+        '--state',
+        type=str,
+        default='Texas',
+        help='State to analyze (default: Texas)'
+    )
+    parser.add_argument(
+        '--min-area',
+        type=float,
+        default=2500.0,
+        help='Minimum area requirement in square miles (default: 2500.0)'
     )
     parser.add_argument(
         '--output-dir',
@@ -141,31 +159,34 @@ def main():
         print("=" * 80)
         print("Export Compliance Results to Multiple Formats")
         print("=" * 80)
+        print(f"State: {args.state}")
+        print(f"Minimum Area: {args.min_area} sq mi")
         print()
 
     # ArcGIS Feature Service URL
-    service_url = (
+    service_url = os.getenv(
+        'ARCGIS_SERVICE_URL',
         "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
         "USA_Census_Counties/FeatureServer/0"
     )
 
     if not args.quiet:
-        print("Step 1: Querying Texas counties...")
+        print(f"Step 1: Querying {args.state} counties...")
 
     with ArcGISClient(service_url) as client:
-        texas_counties = client.query(
-            where="STATE_NAME = 'Texas'",
+        state_counties = client.query(
+            where=f"STATE_NAME = '{args.state}'",
             page_size=500
         )
         if not args.quiet:
-            print(f"✓ Retrieved {len(texas_counties['features'])} counties")
+            print(f"✓ Retrieved {len(state_counties['features'])} counties")
 
     if not args.quiet:
         print("\nStep 2: Running compliance analysis...")
 
     report = analyze_oil_gas_lease_compliance(
-        texas_counties['features'],
-        min_area_sq_miles=2500.0
+        state_counties['features'],
+        min_area_sq_miles=args.min_area
     )
 
     if not args.quiet:

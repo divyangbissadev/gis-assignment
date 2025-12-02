@@ -12,6 +12,7 @@ Usage:
     python3 advanced_query_demo.py
 """
 
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -20,7 +21,8 @@ from src.arcgis_client import ArcGISClient
 from src.query_executor import execute_query
 
 # USA Census Counties Feature Service
-SERVICE_URL = (
+SERVICE_URL = os.getenv(
+    'ARCGIS_SERVICE_URL',
     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
     "USA_Census_Counties/FeatureServer/0"
 )

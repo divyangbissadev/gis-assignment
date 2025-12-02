@@ -89,12 +89,15 @@ cp .env.example .env
 touch .env
 ```
 
-### 2. Add API Keys
+### 2. Configure Environment Variables
 
-Edit `.env` and add your API keys:
+Edit `.env` and configure your settings:
 
 ```bash
-# Required for NLP Query Parser
+# ArcGIS Service URL (used by all examples)
+ARCGIS_SERVICE_URL=https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Census_Counties/FeatureServer/0
+
+# Required for NLP Query Parser (choose at least one)
 ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 OPENAI_API_KEY=sk-your-key-here
 GEMINI_API_KEY=your-gemini-key-here
@@ -103,7 +106,9 @@ GEMINI_API_KEY=your-gemini-key-here
 LOG_LEVEL=INFO
 ```
 
-**Note:** You only need ONE API key to use the NLP query parser. Choose your preferred LLM provider.
+**Notes:**
+- `ARCGIS_SERVICE_URL`: Default ArcGIS service endpoint. All examples use this environment variable, with a fallback to the default URL if not set.
+- **API Keys**: You only need ONE API key to use the NLP query parser. Choose your preferred LLM provider.
 
 ### 3. Verify Installation
 
@@ -118,72 +123,179 @@ python3 -c "from src.arcgis_client import ArcGISClient; print('✓ Installation 
 
 The `examples/` directory contains production-ready examples for oil & gas compliance.
 
-### Example 1: Basic Texas Compliance Check
+### Key Features
+
+**All examples are fully customizable with command-line arguments:**
+- Analyze any state with `--state` argument
+- Set custom area thresholds with `--min-area`
+- Specify cities and coordinates for spatial queries
+- Export to multiple formats (JSON, CSV, HTML maps)
+- Use environment variables for service URLs
+
+**Default behavior:** All examples work out-of-the-box with sensible defaults (Texas, 2500 sq mi threshold) while allowing full customization.
+
+### Customizing the ArcGIS Service URL
+
+All examples use the `ARCGIS_SERVICE_URL` environment variable for flexibility:
+
+**Option 1: Use the default URL (no configuration needed)**
+```bash
+python3 examples/01_basic_state_compliance.py
+```
+
+**Option 2: Set custom URL in `.env` file**
+```bash
+# Edit .env file
+ARCGIS_SERVICE_URL=https://your-custom-arcgis-service.com/FeatureServer/0
+
+# Run example (will use your custom URL)
+python3 examples/01_basic_state_compliance.py
+```
+
+**Option 3: Set URL for a single command**
+```bash
+ARCGIS_SERVICE_URL=https://your-service.com/FeatureServer/0 python3 examples/01_basic_state_compliance.py
+```
+
+This allows you to:
+- Test against different ArcGIS services
+- Use custom data sources
+- Switch between development and production environments
+
+### Example 1: Basic State Compliance Check
 
 ```bash
-python3 examples/01_basic_texas_compliance.py
+# Use defaults (Texas, 2500 sq mi)
+python3 examples/01_basic_state_compliance.py
+
+# Analyze California
+python3 examples/01_basic_state_compliance.py --state="California"
+
+# Custom state and threshold
+python3 examples/01_basic_state_compliance.py --state="Oklahoma" --min-area=3000
+
+# Export to JSON
+python3 examples/01_basic_state_compliance.py --state="Texas" --format=json --output=report.json
 ```
 
 **What it does:**
-- Queries Texas counties from ArcGIS
-- Checks oil & gas lease compliance
-- Displays results in terminal
+- Queries counties from any state
+- Checks oil & gas lease compliance with configurable thresholds
+- Displays results in terminal or exports to file
 
-**Expected output:**
-```
-=== Texas Oil & Gas Lease Compliance Analysis ===
-Found 254 counties in Texas
-✓ Analyzing compliance for 254 leases...
-Summary: 240 compliant, 14 non-compliant
-```
+**Customization options:**
+- `--state` - State name (default: Texas)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
+- `--format` - Output format: text, json, or both
+- `--output` - Save JSON to file
+- `--top` - Number of top non-compliant counties to show (default: 5)
 
-### Example 2: Spatial Query Near Austin
+### Example 2: Spatial Query Near a City
 
 ```bash
-python3 examples/02_spatial_query_austin.py
+# Use defaults (Austin, TX, 50 miles)
+python3 examples/02_spatial_query_city.py
+
+# Analyze around San Francisco
+python3 examples/02_spatial_query_city.py --city="San Francisco" --lat=37.7749 --lon=-122.4194
+
+# Custom city with larger radius
+python3 examples/02_spatial_query_city.py --city="Houston" --lat=29.7604 --lon=-95.3698 --distance=100
+
+# Custom minimum area threshold
+python3 examples/02_spatial_query_city.py --city="Dallas" --lat=32.7767 --lon=-96.7970 --min-area=3000
 ```
 
 **What it does:**
-- Finds counties within 50 miles of Austin, TX
+- Finds counties within a specified radius of any city
 - Analyzes compliance for nearby areas
-- Shows geographic filtering
+- Shows geographic filtering with customizable parameters
+
+**Customization options:**
+- `--city` - City name (default: Austin, TX)
+- `--lat` - Latitude in decimal degrees (default: 30.2672)
+- `--lon` - Longitude in decimal degrees (default: -97.7431)
+- `--distance` - Search radius in miles (default: 50)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
 
 ### Example 3: Export Results to Files
 
 ```bash
+# Use defaults (Texas)
 python3 examples/03_export_results.py
+
+# Analyze California
+python3 examples/03_export_results.py --state="California"
+
+# Custom state and threshold
+python3 examples/03_export_results.py --state="Texas" --min-area=3000.0
+
+# Custom output directory
+python3 examples/03_export_results.py --output-dir=my_reports
+
+# Export specific formats
+python3 examples/03_export_results.py --formats=json,csv
 ```
 
 **What it does:**
 - Exports results to CSV and JSON formats
-- Creates files in `output/` directory
+- Creates files in configurable output directory
 - Demonstrates data export capabilities
 
-**Output files:**
-- `output/texas_compliance.csv`
-- `output/texas_compliance.json`
+**Customization options:**
+- `--state` - State to analyze (default: Texas)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
+- `--output-dir` - Output directory (default: examples/output)
+- `--formats` - Export formats: json, csv (default: json,csv)
 
 ### Example 4: Filter and Analyze
 
 ```bash
+# Use defaults (Texas)
 python3 examples/04_filter_and_analyze.py
+
+# Analyze California
+python3 examples/04_filter_and_analyze.py --state="California"
+
+# Custom threshold
+python3 examples/04_filter_and_analyze.py --state="Oklahoma" --min-area=2000
 ```
 
 **What it does:**
 - Filters results by compliance status
 - Analyzes non-compliant leases
-- Shows detailed reporting
+- Shows detailed reporting with customizable parameters
+
+**Customization options:**
+- `--state` - State to analyze (default: Texas)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
 
 ### Example 5: Batch Multiple States
 
 ```bash
+# Use defaults (TX, CA, OK)
 python3 examples/05_batch_multiple_states.py
+
+# Custom states
+python3 examples/05_batch_multiple_states.py --states=TX,CA,FL,NY
+
+# Custom threshold
+python3 examples/05_batch_multiple_states.py --states=TX,CA --min-area=3000
+
+# Export to JSON
+python3 examples/05_batch_multiple_states.py --states=TX,CA,OK --format=json --output=batch_report.json
 ```
 
 **What it does:**
 - Analyzes multiple states in batch
 - Compares compliance across states
 - Generates comparative reports
+
+**Customization options:**
+- `--states` - Comma-separated state list (default: TX,CA,OK)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
+- `--format` - Output format: text, json, or both
+- `--output` - Save JSON to file
 
 ### Example 6: Custom Thresholds
 
@@ -206,6 +318,71 @@ python3 examples/07_session_save_load.py
 - Saves analysis sessions to disk
 - Loads previous sessions
 - Demonstrates session management
+
+### Example 11: Map Compliance Results
+
+```bash
+# Use defaults (Texas)
+python3 examples/11_map_compliance_results.py
+
+# Map California results
+python3 examples/11_map_compliance_results.py --state="California"
+
+# Custom state and threshold
+python3 examples/11_map_compliance_results.py --state="Oklahoma" --min-area=3000
+
+# Custom output file
+python3 examples/11_map_compliance_results.py --state="Texas" --output=my_map.html
+```
+
+**What it does:**
+- Creates interactive HTML maps using Folium
+- Visualizes compliant (green) and non-compliant (red) counties
+- Generates clickable markers with county details
+- Automatically centers map on selected state
+
+**Customization options:**
+- `--state` - State to map (default: Texas)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
+- `--output` - Output HTML filename (default: compliance_map.html)
+
+**Supported states:** Texas, California, Oklahoma, New York, Florida, Pennsylvania, Illinois, Ohio, Georgia, North Carolina
+
+### Example 14: Complete Oil & Gas Lease Demo
+
+```bash
+# Use defaults (Texas counties + Austin spatial query)
+python3 examples/14_oil_gas_lease_demo.py
+
+# California analysis only (no spatial query)
+python3 examples/14_oil_gas_lease_demo.py --state="California" --skip-spatial
+
+# Texas with Houston spatial query
+python3 examples/14_oil_gas_lease_demo.py --state="Texas" --city="Houston" --radius=75
+
+# Oklahoma with custom coordinates
+python3 examples/14_oil_gas_lease_demo.py --state="Oklahoma" --city-coords="-97.5164,35.4676" --radius=50
+
+# Custom minimum area threshold
+python3 examples/14_oil_gas_lease_demo.py --state="Texas" --min-area=3000 --city="Dallas"
+```
+
+**What it does:**
+- Comprehensive demonstration of all features
+- State-wide county analysis
+- Spatial queries around cities
+- Error handling and logging
+- JSON report generation
+
+**Customization options:**
+- `--state` - State to analyze (default: Texas)
+- `--min-area` - Minimum area in sq mi (default: 2500.0)
+- `--city` - City name for spatial query (e.g., Austin, Houston, Dallas)
+- `--city-coords` - Custom coordinates as "lon,lat" (e.g., "-97.7431,30.2672")
+- `--radius` - Search radius in miles (default: 50.0)
+- `--skip-spatial` - Skip spatial query demonstration
+
+**Pre-configured cities:** Austin, Houston, Dallas, San Antonio (Texas), Los Angeles, San Francisco (California), Oklahoma City (Oklahoma), New York, Miami, Chicago
 
 ---
 

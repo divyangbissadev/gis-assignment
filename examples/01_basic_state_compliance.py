@@ -1,14 +1,15 @@
 """
-Example 1: Basic Texas Counties Compliance Check
+Example 1: Basic State Counties Compliance Check
 
 This example demonstrates the simplest usage of the oil & gas lease
-compliance checker for all Texas counties.
+compliance checker for counties in any state.
 
 Run:
-    python examples/01_basic_texas_compliance.py
-    python examples/01_basic_texas_compliance.py --json
-    python examples/01_basic_texas_compliance.py --format=json
-    python examples/01_basic_texas_compliance.py --output=report.json
+    python examples/01_basic_state_compliance.py
+    python examples/01_basic_state_compliance.py --state="California"
+    python examples/01_basic_state_compliance.py --state="Texas" --min-area=2500
+    python examples/01_basic_state_compliance.py --json
+    python examples/01_basic_state_compliance.py --format=json --output=report.json
 """
 
 import sys
@@ -30,7 +31,19 @@ from src.compliance_checker import analyze_oil_gas_lease_compliance
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description='Analyze Texas counties for oil & gas lease compliance'
+        description='Analyze state counties for oil & gas lease compliance'
+    )
+    parser.add_argument(
+        '--state',
+        type=str,
+        default='Texas',
+        help='State name to analyze (default: Texas)'
+    )
+    parser.add_argument(
+        '--min-area',
+        type=float,
+        default=2500.0,
+        help='Minimum area requirement in square miles (default: 2500.0)'
     )
     parser.add_argument(
         '--json',
@@ -62,7 +75,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def print_text_output(report, args):
+def print_text_output(report, state_name, min_area, args):
     """Print human-readable output."""
     if args.quiet:
         return
@@ -72,6 +85,8 @@ def print_text_output(report, args):
     print("=" * 80)
 
     summary = report['summary']
+    print(f"State:                      {state_name}")
+    print(f"Minimum Area Requirement:   {min_area:,.2f} sq mi")
     print(f"Total Counties Analyzed:    {summary['total_counties_analyzed']}")
     print(f"Compliant Counties:         {summary['compliant_count']} ({summary['compliance_rate_percentage']}%)")
     print(f"Non-Compliant Counties:     {summary['non_compliant_count']}")
@@ -102,16 +117,25 @@ def print_text_output(report, args):
     print("=" * 80)
 
 
-def output_json(report, args):
+def output_json(report, state_name, min_area, args):
     """Output JSON data."""
+    # Enhance report with query metadata
+    enhanced_report = {
+        **report,
+        'query_metadata': {
+            'state': state_name,
+            'min_area_sq_miles': min_area
+        }
+    }
+
     if args.format == 'json' or args.json:
         # Print to stdout
-        print(json.dumps(report, indent=2))
+        print(json.dumps(enhanced_report, indent=2))
 
     if args.output:
         # Save to file
         with open(args.output, 'w', encoding='utf-8') as f:
-            json.dump(report, f, indent=2)
+            json.dump(enhanced_report, f, indent=2)
         if not args.quiet:
             print(f"\n✓ JSON output saved to: {args.output}")
 
@@ -121,7 +145,7 @@ def main():
 
     if not args.quiet:
         print("=" * 80)
-        print("Oil & Gas Lease Compliance Check - Texas Counties")
+        print(f"Oil & Gas Lease Compliance Check - {args.state} Counties")
         print("=" * 80)
         print()
 
@@ -137,33 +161,33 @@ def main():
         print(f"URL: {service_url}")
         print()
 
-    # Query Texas counties
+    # Query state counties
     with ArcGISClient(service_url) as client:
         if not args.quiet:
-            print("Step 2: Querying Texas counties...")
+            print(f"Step 2: Querying {args.state} counties...")
 
-        texas_counties = client.query(
-            where="STATE_NAME = 'California'",
+        counties = client.query(
+            where=f"STATE_NAME = '{args.state}'",
             page_size=500
         )
 
-        feature_count = len(texas_counties['features'])
+        feature_count = len(counties['features'])
         if not args.quiet:
-            print(f"✓ Retrieved {feature_count} Texas counties")
+            print(f"✓ Retrieved {feature_count} {args.state} counties")
             print()
-            print("Step 3: Analyzing compliance with 2,500 sq mi requirement...")
+            print(f"Step 3: Analyzing compliance with {args.min_area:,.2f} sq mi requirement...")
 
         report = analyze_oil_gas_lease_compliance(
-            texas_counties['features'],
-            min_area_sq_miles=2500.0
+            counties['features'],
+            min_area_sq_miles=args.min_area
         )
 
         # Output based on format
         if args.format in ['text', 'both'] or (not args.json and not args.output):
-            print_text_output(report, args)
+            print_text_output(report, args.state, args.min_area, args)
 
         if args.format in ['json', 'both'] or args.json or args.output:
-            output_json(report, args)
+            output_json(report, args.state, args.min_area, args)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,8 @@ perform targeted analysis on specific subsets of counties.
 
 Run:
     python examples/04_filter_and_analyze.py
+    python examples/04_filter_and_analyze.py --state=California
+    python examples/04_filter_and_analyze.py --state=Texas --min-area=3000.0
     python examples/04_filter_and_analyze.py --json
     python examples/04_filter_and_analyze.py --output=filtered_results.json
 """
@@ -14,6 +16,9 @@ import sys
 import os
 import json
 import argparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,6 +31,18 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description='Filter and analyze compliance results by categories'
+    )
+    parser.add_argument(
+        '--state',
+        type=str,
+        default='Texas',
+        help='State to analyze (default: Texas)'
+    )
+    parser.add_argument(
+        '--min-area',
+        type=float,
+        default=2500.0,
+        help='Minimum area requirement in square miles (default: 2500.0)'
     )
     parser.add_argument(
         '--json',
@@ -198,20 +215,23 @@ def main():
         print("=" * 80)
         print("Filter and Analyze Compliance Results")
         print("=" * 80)
+        print(f"State: {args.state}")
+        print(f"Minimum Area: {args.min_area} sq mi")
         print()
 
     # ArcGIS Feature Service URL
-    service_url = (
+    service_url = os.getenv(
+        'ARCGIS_SERVICE_URL',
         "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
         "USA_Census_Counties/FeatureServer/0"
     )
 
     if not args.quiet:
-        print("Querying Texas counties...")
+        print(f"Querying {args.state} counties...")
 
     with ArcGISClient(service_url) as client:
-        texas_counties = client.query(
-            where="STATE_NAME = 'Texas'",
+        state_counties = client.query(
+            where=f"STATE_NAME = '{args.state}'",
             page_size=500
         )
 
@@ -219,8 +239,8 @@ def main():
         print("Running compliance analysis...")
 
     report = analyze_oil_gas_lease_compliance(
-        texas_counties['features'],
-        min_area_sq_miles=2500.0
+        state_counties['features'],
+        min_area_sq_miles=args.min_area
     )
 
     non_compliant = report['non_compliant_counties']
