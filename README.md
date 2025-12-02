@@ -18,7 +18,7 @@ Complete guide to setting up the project and running all examples and demos.
 
 ### Required Software
 
-- **Python 3.8+** (3.12 recommended)
+- **Python 3.9+** (3.12 recommended)
 - **pip** (Python package manager)
 - **virtualenv** or **venv** (for isolated environments)
 
@@ -42,7 +42,7 @@ Get your API keys:
 
 ```bash
 git clone <repository-url>
-cd gis-developer-takehome
+cd gis-assignment
 ```
 
 ### 2. Create Virtual Environment
