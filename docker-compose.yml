@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  arcgis-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: arcgis-client
+    image: arcgis-client:latest
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - ARCGIS_CONNECT_TIMEOUT=10
+      - ARCGIS_READ_TIMEOUT=30
+      - ARCGIS_MAX_RETRIES=3
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./sessions:/app/sessions
+      - ./.cache:/app/.cache
+    networks:
+      - arcgis-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  arcgis-network:
+    driver: bridge
+
+volumes:
+  logs:
+  sessions:
+  cache:
