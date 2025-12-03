@@ -168,7 +168,7 @@ def main():
 
         counties = client.query(
             where=f"STATE_NAME = '{args.state}'",
-            page_size=500
+            page_size=10
         )
 
         feature_count = len(counties['features'])

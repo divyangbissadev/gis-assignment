@@ -19,6 +19,9 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 
+# Add parent directory to path to allow imports from src
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 load_dotenv()
 
 from src.arcgis_client import ArcGISClient
@@ -33,6 +36,7 @@ SERVICE_URL = os.getenv(
     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/"
     "USA_Census_Counties/FeatureServer/0"
 )
+
 
 
 def print_section(title: str) -> None:
