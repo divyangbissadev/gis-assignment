@@ -1,0 +1,420 @@
+{
+  "summary": {
+    "total_counties_analyzed": 58,
+    "compliant_count": 22,
+    "non_compliant_count": 36,
+    "invalid_count": 0,
+    "compliance_rate_percentage": 37.93,
+    "total_shortfall_sq_miles": 48927.36,
+    "average_shortfall_sq_miles": 1359.09
+  },
+  "non_compliant_counties": [
+    {
+      "county_name": "San Francisco County",
+      "state": "California",
+      "area_sq_miles": 47.32,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 885932,
+      "shortfall_sq_miles": 2452.68,
+      "compliance_percentage": 1.89,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Santa Cruz County",
+      "state": "California",
+      "area_sq_miles": 446.22,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 268441,
+      "shortfall_sq_miles": 2053.78,
+      "compliance_percentage": 17.85,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "San Mateo County",
+      "state": "California",
+      "area_sq_miles": 447.23,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 773404,
+      "shortfall_sq_miles": 2052.77,
+      "compliance_percentage": 17.89,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Marin County",
+      "state": "California",
+      "area_sq_miles": 525.03,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 260754,
+      "shortfall_sq_miles": 1974.97,
+      "compliance_percentage": 21.0,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Amador County",
+      "state": "California",
+      "area_sq_miles": 605.95,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 41353,
+      "shortfall_sq_miles": 1894.05,
+      "compliance_percentage": 24.24,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Sutter County",
+      "state": "California",
+      "area_sq_miles": 608.41,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 100029,
+      "shortfall_sq_miles": 1891.59,
+      "compliance_percentage": 24.34,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Yuba County",
+      "state": "California",
+      "area_sq_miles": 644.01,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 84526,
+      "shortfall_sq_miles": 1855.99,
+      "compliance_percentage": 25.76,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Contra Costa County",
+      "state": "California",
+      "area_sq_miles": 737.91,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 1180881,
+      "shortfall_sq_miles": 1762.09,
+      "compliance_percentage": 29.52,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Alpine County",
+      "state": "California",
+      "area_sq_miles": 743.19,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 1245,
+      "shortfall_sq_miles": 1756.81,
+      "compliance_percentage": 29.73,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Alameda County",
+      "state": "California",
+      "area_sq_miles": 745.37,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 1687539,
+      "shortfall_sq_miles": 1754.63,
+      "compliance_percentage": 29.81,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Napa County",
+      "state": "California",
+      "area_sq_miles": 790.09,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 136829,
+      "shortfall_sq_miles": 1709.91,
+      "compliance_percentage": 31.6,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Orange County",
+      "state": "California",
+      "area_sq_miles": 796.09,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 3213661,
+      "shortfall_sq_miles": 1703.91,
+      "compliance_percentage": 31.84,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Solano County",
+      "state": "California",
+      "area_sq_miles": 835.96,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 458680,
+      "shortfall_sq_miles": 1664.04,
+      "compliance_percentage": 33.44,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Sierra County",
+      "state": "California",
+      "area_sq_miles": 962.16,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 3197,
+      "shortfall_sq_miles": 1537.84,
+      "compliance_percentage": 38.49,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Nevada County",
+      "state": "California",
+      "area_sq_miles": 973.8,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 103176,
+      "shortfall_sq_miles": 1526.2,
+      "compliance_percentage": 38.95,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Sacramento County",
+      "state": "California",
+      "area_sq_miles": 980.93,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 1614771,
+      "shortfall_sq_miles": 1519.07,
+      "compliance_percentage": 39.24,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Del Norte County",
+      "state": "California",
+      "area_sq_miles": 1012.76,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 27769,
+      "shortfall_sq_miles": 1487.24,
+      "compliance_percentage": 40.51,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Yolo County",
+      "state": "California",
+      "area_sq_miles": 1021.83,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 219520,
+      "shortfall_sq_miles": 1478.17,
+      "compliance_percentage": 40.87,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Calaveras County",
+      "state": "California",
+      "area_sq_miles": 1036.93,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 45436,
+      "shortfall_sq_miles": 1463.07,
+      "compliance_percentage": 41.48,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Colusa County",
+      "state": "California",
+      "area_sq_miles": 1156.35,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 21969,
+      "shortfall_sq_miles": 1343.65,
+      "compliance_percentage": 46.25,
+      "recommendation": "Does not meet minimum requirements - alternative lease structure needed"
+    },
+    {
+      "county_name": "Santa Clara County",
+      "state": "California",
+      "area_sq_miles": 1299.18,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 1976551,
+      "shortfall_sq_miles": 1200.82,
+      "compliance_percentage": 51.97,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Glenn County",
+      "state": "California",
+      "area_sq_miles": 1326.98,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 29014,
+      "shortfall_sq_miles": 1173.02,
+      "compliance_percentage": 53.08,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Lake County",
+      "state": "California",
+      "area_sq_miles": 1328.1,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 68477,
+      "shortfall_sq_miles": 1171.9,
+      "compliance_percentage": 53.12,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "San Benito County",
+      "state": "California",
+      "area_sq_miles": 1390.47,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 68191,
+      "shortfall_sq_miles": 1109.53,
+      "compliance_percentage": 55.62,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Kings County",
+      "state": "California",
+      "area_sq_miles": 1392.19,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 154126,
+      "shortfall_sq_miles": 1107.81,
+      "compliance_percentage": 55.69,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "San Joaquin County",
+      "state": "California",
+      "area_sq_miles": 1426.6,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 805076,
+      "shortfall_sq_miles": 1073.4,
+      "compliance_percentage": 57.06,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Mariposa County",
+      "state": "California",
+      "area_sq_miles": 1462.83,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 16927,
+      "shortfall_sq_miles": 1037.17,
+      "compliance_percentage": 58.51,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Placer County",
+      "state": "California",
+      "area_sq_miles": 1502.24,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 420605,
+      "shortfall_sq_miles": 997.76,
+      "compliance_percentage": 60.09,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Stanislaus County",
+      "state": "California",
+      "area_sq_miles": 1514.06,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 557562,
+      "shortfall_sq_miles": 985.94,
+      "compliance_percentage": 60.56,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Sonoma County",
+      "state": "California",
+      "area_sq_miles": 1588.07,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 486760,
+      "shortfall_sq_miles": 911.93,
+      "compliance_percentage": 63.52,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Butte County",
+      "state": "California",
+      "area_sq_miles": 1677.13,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 208339,
+      "shortfall_sq_miles": 822.87,
+      "compliance_percentage": 67.09,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "El Dorado County",
+      "state": "California",
+      "area_sq_miles": 1786.36,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 193917,
+      "shortfall_sq_miles": 713.64,
+      "compliance_percentage": 71.45,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Ventura County",
+      "state": "California",
+      "area_sq_miles": 1854.55,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 844853,
+      "shortfall_sq_miles": 645.45,
+      "compliance_percentage": 74.18,
+      "recommendation": "Significant consolidation required - consider pooling agreement"
+    },
+    {
+      "county_name": "Merced County",
+      "state": "California",
+      "area_sq_miles": 1978.65,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 288941,
+      "shortfall_sq_miles": 521.35,
+      "compliance_percentage": 79.15,
+      "recommendation": "Combine with adjacent tracts or apply for non-standard terms"
+    },
+    {
+      "county_name": "Madera County",
+      "state": "California",
+      "area_sq_miles": 2153.24,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 159627,
+      "shortfall_sq_miles": 346.76,
+      "compliance_percentage": 86.13,
+      "recommendation": "Combine with adjacent tracts or apply for non-standard terms"
+    },
+    {
+      "county_name": "Tuolumne County",
+      "state": "California",
+      "area_sq_miles": 2274.45,
+      "required_sq_miles": 2500.0,
+      "compliant": false,
+      "population": 55584,
+      "shortfall_sq_miles": 225.55,
+      "compliance_percentage": 90.98,
+      "recommendation": "Consider special terms negotiation - minor shortfall"
+    }
+  ],
+  "compliant_counties": [],
+  "metadata": {
+    "policy": "All oil & gas leases must be at least 2,500 square miles to qualify for standard terms",
+    "minimum_area_requirement_sq_miles": 2500.0,
+    "analysis_timestamp": "2025-12-03T15:08:23.028378",
+    "include_geometry": false
+  },
+  "query_metadata": {
+    "state": "California",
+    "min_area_sq_miles": 2500.0
+  }
+}

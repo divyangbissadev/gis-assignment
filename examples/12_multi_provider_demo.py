@@ -18,6 +18,9 @@ import os
 from typing import Optional, List
 from dotenv import load_dotenv
 
+# Add parent directory to path to import modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.nlp_query_parser import NLPQueryParser
 from src.errors import ArcGISValidationError
 

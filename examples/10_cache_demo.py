@@ -12,10 +12,14 @@ Usage:
     python3 cache_demo.py
 """
 
+import sys
 import os
 import time
 from dotenv import load_dotenv
 load_dotenv()
+
+# Add parent directory to path to import modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.arcgis_client import ArcGISClient
 

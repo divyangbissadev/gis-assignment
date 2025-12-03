@@ -12,9 +12,13 @@ Usage:
     python3 advanced_query_demo.py
 """
 
+import sys
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
+# Add parent directory to path to import modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.nlp_query_parser import NLPQueryParser
 from src.arcgis_client import ArcGISClient

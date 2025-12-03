@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Quick test of NLP Query Parser"""
 
+import sys
 import os
 from dotenv import load_dotenv
 
 # Load API key from .env
 load_dotenv()
+
+# Add parent directory to path to import modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.nlp_query_parser import NLPQueryParser
 
