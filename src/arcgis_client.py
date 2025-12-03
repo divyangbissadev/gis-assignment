@@ -222,7 +222,7 @@ class SimpleArcGISClient:
             raise ArcGISValidationError("max_pages must be a positive integer when provided.")
 
         base_params: Dict[str, Any] = {
-            "f": "json",
+            "f": "geojson",
             "where": where_clause,
             "outFields": out_fields,
             "returnGeometry": str(return_geometry).lower(),
@@ -388,6 +388,8 @@ class SimpleArcGISClient:
 
         try:
             data = response.json()
+            with open('output.json', 'w', encoding='utf-8') as f:
+                f.write(json.dumps(data, indent=4))
         except json.JSONDecodeError as e:
             logger.error(
                 "Invalid JSON response",

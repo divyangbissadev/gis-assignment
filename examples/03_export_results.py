@@ -2,7 +2,7 @@
 Example 3: Export Compliance Results to Multiple Formats
 
 This example demonstrates how to export compliance analysis results
-to JSON and CSV formats for further processing or reporting.
+to JSON, CSV, TXT, and GeoJSON formats for further processing or reporting.
 
 Run:
     python examples/03_export_results.py
@@ -10,6 +10,8 @@ Run:
     python examples/03_export_results.py --state=Texas --min-area=3000.0
     python examples/03_export_results.py --output-dir=my_reports
     python examples/03_export_results.py --formats=json,csv
+    python examples/03_export_results.py --formats=geojson  # Export with geometries
+    python examples/03_export_results.py --formats=json,csv,geojson  # Multiple formats
     python examples/03_export_results.py --json  # Also export to stdout
 """
 
@@ -27,7 +29,7 @@ load_dotenv()
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.arcgis_client import ArcGISClient
+from src.arcgis_client import ArcGISClient, SimpleArcGISClient
 from src.compliance_checker import analyze_oil_gas_lease_compliance
 
 
@@ -58,7 +60,7 @@ def parse_arguments():
         '--formats',
         type=str,
         default='json,csv,txt',
-        help='Comma-separated list of formats to export (json,csv,txt) (default: all)'
+        help='Comma-separated list of formats to export (json,csv,txt,geojson) (default: json,csv,txt)'
     )
     parser.add_argument(
         '--json',
@@ -104,13 +106,64 @@ def export_to_csv(counties, filename, quiet=False):
         'recommendation'
     ]
 
+    # Filter out non-CSV fields (geometry, compliant) from counties
+    csv_counties = []
+    for county in counties:
+        csv_row = {k: v for k, v in county.items() if k in fieldnames}
+        csv_counties.append(csv_row)
+
     with open(filename, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
         writer.writeheader()
-        writer.writerows(counties)
+        writer.writerows(csv_counties)
 
     if not quiet:
         print(f"✓ Exported {len(counties)} counties to: {filename}")
+
+
+def export_to_geojson(counties, filename, quiet=False):
+    """Export county list to GeoJSON file with geometries."""
+    if not counties:
+        if not quiet:
+            print(f"✗ No data to export to {filename}")
+        return
+
+    # Filter counties that have geometry
+    features_with_geometry = [county for county in counties if county.get('geometry')]
+
+    if not features_with_geometry:
+        if not quiet:
+            print(f"⚠ No geometries available for GeoJSON export to {filename}")
+        return
+
+    # Create GeoJSON FeatureCollection
+    geojson = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+
+    for county in features_with_geometry:
+        feature = {
+            "type": "Feature",
+            "geometry": county.get('geometry'),
+            "properties": {
+                "county_name": county.get('county_name'),
+                "state": county.get('state'),
+                "area_sq_miles": county.get('area_sq_miles'),
+                "required_sq_miles": county.get('required_sq_miles'),
+                "shortfall_sq_miles": county.get('shortfall_sq_miles'),
+                "compliance_percentage": county.get('compliance_percentage'),
+                "population": county.get('population'),
+                "recommendation": county.get('recommendation')
+            }
+        }
+        geojson["features"].append(feature)
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(geojson, f, indent=2)
+
+    if not quiet:
+        print(f"✓ Exported {len(geojson['features'])} counties with geometry to: {filename}")
 
 
 def export_summary_report(report, filename, quiet=False):
@@ -155,6 +208,10 @@ def export_summary_report(report, filename, quiet=False):
 def main():
     args = parse_arguments()
 
+    # Parse requested formats first to determine if geometry is needed
+    requested_formats = [fmt.strip().lower() for fmt in args.formats.split(',')]
+    include_geometry = 'geojson' in requested_formats
+
     if not args.quiet:
         print("=" * 80)
         print("Export Compliance Results to Multiple Formats")
@@ -173,27 +230,39 @@ def main():
     if not args.quiet:
         print(f"Step 1: Querying {args.state} counties...")
 
-    with ArcGISClient(service_url) as client:
-        state_counties = client.query(
-            where=f"STATE_NAME = '{args.state}'",
-            page_size=500
-        )
-        if not args.quiet:
-            print(f"✓ Retrieved {len(state_counties['features'])} counties")
+    # Use SimpleArcGISClient to preserve GeoJSON geometry when requested
+    if include_geometry:
+        with SimpleArcGISClient(service_url) as client:
+            state_counties = client.query_features(
+                where_clause=f"STATE_NAME = '{args.state}'",
+                max_records=500,
+                return_geometry=True,
+                paginate=True
+            )
+            if not args.quiet:
+                print(f"✓ Retrieved {len(state_counties['features'])} counties (with geometry)")
+    else:
+        with ArcGISClient(service_url) as client:
+            state_counties = client.query(
+                where=f"STATE_NAME = '{args.state}'",
+                page_size=500
+            )
+            if not args.quiet:
+                print(f"✓ Retrieved {len(state_counties['features'])} counties")
 
     if not args.quiet:
         print("\nStep 2: Running compliance analysis...")
+        if include_geometry:
+            print("  (including geometry data for GeoJSON export)")
 
     report = analyze_oil_gas_lease_compliance(
         state_counties['features'],
-        min_area_sq_miles=args.min_area
+        min_area_sq_miles=args.min_area,
+        include_geojson=include_geometry
     )
 
     if not args.quiet:
         print(f"✓ Analysis complete")
-
-    # Parse requested formats
-    requested_formats = [fmt.strip().lower() for fmt in args.formats.split(',')]
 
     # Create output directory
     output_dir = args.output_dir
@@ -226,6 +295,14 @@ def main():
         summary_file = f"{output_dir}/summary_report{timestamp}.txt"
         export_summary_report(report, summary_file, args.quiet)
         exported_files.append(("Summary Text Report", summary_file))
+
+    if 'geojson' in requested_formats:
+        non_compliant_geojson = f"{output_dir}/non_compliant_counties{timestamp}.geojson"
+        compliant_geojson = f"{output_dir}/compliant_counties{timestamp}.geojson"
+        export_to_geojson(report['non_compliant_counties'], non_compliant_geojson, args.quiet)
+        export_to_geojson(report['compliant_counties'], compliant_geojson, args.quiet)
+        exported_files.append(("Non-Compliant GeoJSON", non_compliant_geojson))
+        exported_files.append(("Compliant GeoJSON", compliant_geojson))
 
     # Output JSON to stdout if requested
     if args.json:
